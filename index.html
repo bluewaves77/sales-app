@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sales App Elektrikal - Pencari Produk & Kalkulator Diskon</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 15px;
+        }
+        
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 32px;
+            margin-bottom: 10px;
+        }
+        
+        .content {
+            padding: 30px;
+        }
+        
+        .section-title {
+            font-size: 20px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 20px;
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 12px;
+        }
+        
+        .search-box {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 25px;
+        }
+        
+        .search-box input {
+            flex: 1;
+            padding: 12px 15px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 15px;
+        }
+        
+        .search-box button {
+            padding: 12px 30px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background 0.3s;
+        }
+        
+        .search-box button:hover {
+            background: #764ba2;
+        }
+        
+        .product-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+        
+        .product-card {
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            padding: 18px;
+            background: #f9f9f9;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .product-card:hover {
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transform: translateY(-2px);
+        }
+        
+        .product-card.selected {
+            border: 2px solid #667eea;
+            background: #f0f4ff;
+        }
+        
+        .product-ref {
+            font-size: 12px;
+            color: #999;
+            margin-bottom: 5px;
+            font-weight: 600;
+        }
+        
+        .product-description {
+            font-size: 16px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 10px;
+        }
+        
+        .product-meta {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 12px;
+            flex-wrap: wrap;
+        }
+        
+        .product-category {
+            display: inline-block;
+            background: #667eea;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 5px;
+            font-size: 12px;
+        }
+        
+        .product-brand {
+            display: inline-block;
+            background: #f0f0f0;
+            color: #333;
+            padding: 4px 12px;
+            border-radius: 5px;
+            font-size: 12px;
+            border: 1px solid #ddd;
+        }
+        
+        .product-price {
+            font-size: 18px;
+            color: #667eea;
+            font-weight: bold;
+            margin-top: 12px;
+        }
+        
+        .calculator-section {
+            background: #f5f5f5;
+            padding: 25px;
+            border-radius: 10px;
+            border-left: 4px solid #667eea;
+        }
+        
+        .form-group {
+            margin-bottom: 18px;
+        }
+        
+        .form-group label {
+            display: block;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+        
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 10px 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 14px;
+            font-family: inherit;
+        }
+        
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 5px rgba(102, 126, 234, 0.3);
+        }
+        
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+        
+        .result-box {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 20px;
+            border: 2px solid #667eea;
+        }
+        
+        .result-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid #eee;
+            font-size: 15px;
+        }
+        
+        .result-row:last-child {
+            border-bottom: none;
+        }
+        
+        .result-row.total {
+            background: #f0f4ff;
+            padding: 15px;
+            margin-top: 10px;
+            border-radius: 5px;
+            font-size: 18px;
+            font-weight: bold;
+            color: #667eea;
+        }
+        
+        .button-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        
+        .button-group button {
+            flex: 1;
+            padding: 14px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background 0.3s;
+            font-size: 15px;
+        }
+        
+        .btn-calculate {
+            background: #667eea;
+            color: white;
+        }
+        
+        .btn-calculate:hover {
+            background: #764ba2;
+        }
+        
+        .btn-reset {
+            background: #ccc;
+            color: #333;
+        }
+        
+        .btn-reset:hover {
+            background: #aaa;
+        }
+        
+        @media (max-width: 768px) {
+            .product-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+            
+            .button-group {
+                flex-direction: column;
+            }
+            
+            .header h1 {
+                font-size: 24px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🛒 Sales App Elektrikal</h1>
+            <p>Pencari Produk & Kalkulator Diskon Otomatis</p>
+        </div>
+        
+        <div class="content">
+            <div style="margin-bottom: 35px;">
+                <div class="section-title">🔍 Pencarian Produk</div>
+                <div class="search-box">
+                    <input 
+                        type="text" 
+                        id="searchInput" 
+                        placeholder="Cari ref. number, deskripsi, kategori, atau brand..."
+                    >
+                    <button onclick="searchProducts()">Cari</button>
+                </div>
+                <div id="productGrid" class="product-grid"></div>
+            </div>
+            
+            <div>
+                <div class="section-title">💰 Kalkulator Diskon & Harga Nett</div>
+                
+                <div class="calculator-section">
+                    <div class="form-group">
+                        <label>Produk yang Dipilih:</label>
+                        <select id="productSelect" onchange="updateSelectedProduct()">
+                            <option value="">-- Pilih Produk --</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Jumlah Pembelian (Unit):</label>
+                            <input 
+                                type="number" 
+                                id="quantity" 
+                                value="1" 
+                                min="1" 
+                                onchange="calculateDiscount()"
+                            >
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Diskon (%):</label>
+                            <input 
+                                type="number" 
+                                id="discount" 
+                                value="0" 
+                                min="0" 
+                                max="100" 
+                                step="0.5"
+                                onchange="calculateDiscount()"
+                            >
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Catatan Diskon:</label>
+                        <input 
+                            type="text" 
+                            id="discountNote" 
+                            placeholder="Misal: Diskon Q4, Member VIP, Bulk Order"
+                        >
+                    </div>
+                    
+                    <div class="button-group">
+                        <button class="btn-calculate" onclick="calculateDiscount()">
+                            ✓ Hitung Harga Nett
+                        </button>
+                        <button class="btn-reset" onclick="resetCalculator()">
+                            ⟲ Reset
+                        </button>
+                    </div>
+                    
+                    <div id="resultBox" class="result-box" style="display:none;">
+                        <div class="result-row">
+                            <strong>Harga Pricelist:</strong>
+                            <span id="unitPrice">Rp -</span>
+                        </div>
+                        <div class="result-row">
+                            <strong>Jumlah Unit:</strong>
+                            <span id="quantityResult">-</span>
+                        </div>
+                        <div class="result-row">
+                            <strong>Subtotal:</strong>
+                            <span id="subtotal">Rp -</span>
+                        </div>
+                        <div class="result-row">
+                            <strong>Diskon (<span id="discountPercent">0</span>%):</strong>
+                            <span id="discountAmount">Rp -</span>
+                        </div>
+                        <div class="result-row total">
+                            <strong>💵 HARGA NETT:</strong>
+                            <strong id="finalPrice" style="color: #667eea;">Rp -</strong>
+                        </div>
+                        <div class="result-row">
+                            <small style="color: #999;">Catatan: <span id="displayNote">-</span></small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // DATA PRODUK - SESUAI STRUKTUR BARU
+        const products = [
+            {
+                id: 1,
+                refNumber: 'MCB-001',
+                description: 'MCB 2P 16A',
+                category: 'Breaker',
+                brand: 'Schneider Electric',
+                price: 125000
+            },
+            {
+                id: 2,
+                refNumber: 'MCB-002',
+                description: 'MCB 3P 32A',
+                category: 'Breaker',
+                brand: 'Schneider Electric',
+                price: 185000
+            },
+            {
+                id: 3,
+                refNumber: 'CAP-001',
+                description: 'Kapasitor Bank 5kVAR',
+                category: 'Capacitor',
+                brand: 'ABB',
+                price: 850000
+            },
+            {
+                id: 4,
+                refNumber: 'BUSBAR-001',
+                description: 'Bus Duct 200A System 3P',
+                category: 'Bus Bar',
+                brand: 'Rittal',
+                price: 2500000
+            },
+            {
+                id: 5,
+                refNumber: 'MCB-003',
+                description: 'MCB 1P 10A',
+                category: 'Breaker',
+                brand: 'Schneider Electric',
+                price: 95000
+            }
+        ];
+
+        let selectedProduct = null;
+
+        document.addEventListener('DOMContentLoaded', function() {
+            displayProducts(products);
+            populateProductSelect();
+            document.getElementById('searchInput').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') searchProducts();
+            });
+        });
+
+        function displayProducts(productsToShow) {
+            const grid = document.getElementById('productGrid');
+            grid.innerHTML = '';
+            
+            if (productsToShow.length === 0) {
+                grid.innerHTML = '<div style="grid-column: 1/-1; text-align: center; padding: 2rem; color: #666;">Produk tidak ditemukan</div>';
+                return;
+            }
+            
+            productsToShow.forEach(product => {
+                const card = document.createElement('div');
+                card.className = 'product-card';
+                if (selectedProduct && selectedProduct.id === product.id) {
+                    card.classList.add('selected');
+                }
+                
+                card.innerHTML = `
+                    <div class="product-ref">Ref: ${product.refNumber}</div>
+                    <div class="product-description">${product.description}</div>
+                    <div class="product-meta">
+                        <span class="product-category">${product.category}</span>
+                        <span class="product-brand">${product.brand}</span>
+                    </div>
+                    <div class="product-price">Rp ${product.price.toLocaleString('id-ID')}</div>
+                `;
+                
+                card.addEventListener('click', function() {
+                    selectedProduct = product;
+                    displayProducts(productsToShow);
+                    populateProductSelect();
+                });
+                
+                grid.appendChild(card);
+            });
+        }
+
+        function searchProducts() {
+            const query = document.getElementById('searchInput').value.toLowerCase();
+            
+            if (query === '') {
+                displayProducts(products);
+                return;
+            }
+            
+            const filtered = products.filter(product => 
+                product.refNumber.toLowerCase().includes(query) ||
+                product.description.toLowerCase().includes(query) ||
+                product.category.toLowerCase().includes(query) ||
+                product.brand.toLowerCase().includes(query)
+            );
+            
+            displayProducts(filtered);
+        }
+
+        function populateProductSelect() {
+            const select = document.getElementById('productSelect');
+            select.innerHTML = '<option value="">-- Pilih Produk --</option>';
+            
+            products.forEach(product => {
+                const option = document.createElement('option');
+                option.value = product.id;
+                option.text = `${product.refNumber} - ${product.description} (Rp ${product.price.toLocaleString('id-ID')})`;
+                
+                if (selectedProduct && selectedProduct.id === product.id) {
+                    option.selected = true;
+                }
+                
+                select.appendChild(option);
+            });
+        }
+
+        function updateSelectedProduct() {
+            const select = document.getElementById('productSelect');
+            const productId = parseInt(select.value);
+            
+            if (productId) {
+                selectedProduct = products.find(p => p.id === productId);
+            }
+        }
+
+        function calculateDiscount() {
+            if (!selectedProduct) {
+                alert('Pilih produk terlebih dahulu!');
+                return;
+            }
+            
+            const quantity = parseInt(document.getElementById('quantity').value) || 1;
+            const discountPercent = parseFloat(document.getElementById('discount').value) || 0;
+            const discountNote = document.getElementById('discountNote').value || '-';
+            
+            const unitPrice = selectedProduct.price;
+            const subtotal = unitPrice * quantity;
+            const discountAmount = subtotal * (discountPercent / 100);
+            const finalPrice = subtotal - discountAmount;
+            
+            document.getElementById('unitPrice').textContent = `Rp ${unitPrice.toLocaleString('id-ID')}`;
+            document.getElementById('quantityResult').textContent = `${quantity} unit`;
+            document.getElementById('subtotal').textContent = `Rp ${subtotal.toLocaleString('id-ID')}`;
+            document.getElementById('discountPercent').textContent = discountPercent;
+            document.getElementById('discountAmount').textContent = `Rp ${Math.round(discountAmount).toLocaleString('id-ID')}`;
+            document.getElementById('finalPrice').textContent = `Rp ${Math.round(finalPrice).toLocaleString('id-ID')}`;
+            document.getElementById('displayNote').textContent = discountNote;
+            
+            document.getElementById('resultBox').style.display = 'block';
+        }
+
+        function resetCalculator() {
+            document.getElementById('productSelect').value = '';
+            document.getElementById('quantity').value = 1;
+            document.getElementById('discount').value = 0;
+            document.getElementById('discountNote').value = '';
+            document.getElementById('resultBox').style.display = 'none';
+            selectedProduct = null;
+        }
+    </script>
+</body>
+</html>
